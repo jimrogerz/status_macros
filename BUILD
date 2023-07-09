@@ -21,5 +21,4 @@ cc_library(
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/strings",
     ],
-    copts = ["-std=c++14"],
 )
