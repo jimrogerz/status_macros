@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "status_builder.h"
+#include "mediapipe/framework/deps/status_builder.h"
 
 #include <memory>
 #include <sstream>
@@ -93,8 +93,6 @@ absl::Status StatusBuilder::Impl::JoinMessageToStatus() {
         return absl::StrCat(status.message(), stream.str());
       case MessageJoinStyle::kPrepend:
         return absl::StrCat(stream.str(), status.message());
-      default:
-        return absl::StrCat();
     }
   }());
 }
