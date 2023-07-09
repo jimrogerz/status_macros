@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "mediapipe/framework/deps/status_builder.h"
+#include "status_builder.h"
 
 #include <memory>
 #include <sstream>
