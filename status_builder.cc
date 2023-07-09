@@ -89,10 +89,12 @@ absl::Status StatusBuilder::Impl::JoinMessageToStatus() {
     switch (join_style) {
       case MessageJoinStyle::kAnnotate:
         return absl::StrCat(status.message(), "; ", stream.str());
-      case MessageJoinStyle::kAppend:
-        return absl::StrCat(status.message(), stream.str());
       case MessageJoinStyle::kPrepend:
         return absl::StrCat(stream.str(), status.message());
+      case MessageJoinStyle::kAppend:
+        // fall through
+      default:
+        return absl::StrCat(status.message(), stream.str());
     }
   }());
 }
