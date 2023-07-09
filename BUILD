@@ -15,11 +15,11 @@ cc_library(
         "status_builder.h",
         "status_macros.h",
     ],
-
     deps = [
         "@com_google_absl//absl/base:core_headers",
         "@com_google_absl//absl/memory",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/strings",
     ],
+    copts = ["-std=c++14"],
 )
