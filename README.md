@@ -1,11 +1,18 @@
 # Google C++ Status Macros
 
-This repository contains a [bazel](https://bazel.build) build target for Google C++ status macros, redistributed from [mediapipe](https://github.com/google/mediapipe).
+This repository contains a [bazel](https://bazel.build) build target for Google C++ status macros,
+redistributed from [mediapipe](https://github.com/google/mediapipe).
 
+## Bzlmod Setup
 
-## Setup
+This repo supports integration with [Bzlmod](https://docs.bazel.build/versions/5.0.0/bzlmod.html).
 
-Add the following to your WORKSPACE file:
+I'll see if I can get this in the central repository, but for now looks like you'll have to set it up
+with a [local registry](https://bazel.build/external/registry).
+
+## WORKSPACE Setup
+
+If you're not using Bzlmod, add the following to your WORKSPACE file:
 
 
 ```
@@ -18,8 +25,10 @@ git_repository(
 )
 ```
 
-Add `"@status_macros//:status_macros"` to your BUILD deps, then `#include "status_macros.h"` to your source.
+Also make sure you have transitive dependencies from this repo's [WORKSPACE](https://github.com/jimrogerz/status_macros/blob/main/WORKSPACE).
 
 ## Usage
+
+Add `"@status_macros//:status_macros"` to your BUILD deps, then `#include "status_macros.h"` to your source.
 
 See [RETURN_IF_ERROR](https://github.com/jimrogerz/status_macros/blob/main/status_macros.h#L29) and [ASSIGN_OR_RETURN](https://github.com/jimrogerz/status_macros/blob/main/status_macros.h#L91).
