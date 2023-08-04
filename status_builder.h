@@ -29,23 +29,23 @@
 namespace mediapipe {
 
 class ABSL_MUST_USE_RESULT StatusBuilder {
- public:
-  StatusBuilder(const StatusBuilder& sb);
-  StatusBuilder& operator=(const StatusBuilder& sb);
+public:
+  StatusBuilder(const StatusBuilder &sb);
+  StatusBuilder &operator=(const StatusBuilder &sb);
 
-  StatusBuilder(StatusBuilder&&) = default;
-  StatusBuilder& operator=(StatusBuilder&&) = default;
+  StatusBuilder(StatusBuilder &&) = default;
+  StatusBuilder &operator=(StatusBuilder &&) = default;
 
   // Creates a `StatusBuilder` based on an original status.  If logging is
   // enabled, it will use `location` as the location from which the log message
   // occurs.  A typical user will call this with `MEDIAPIPE_LOC`.
-  StatusBuilder(const absl::Status& original_status,
+  StatusBuilder(const absl::Status &original_status,
                 mediapipe::source_location location)
       : impl_(original_status.ok()
                   ? nullptr
                   : std::make_unique<Impl>(original_status, location)) {}
 
-  StatusBuilder(absl::Status&& original_status,
+  StatusBuilder(absl::Status &&original_status,
                 mediapipe::source_location location)
       : impl_(original_status.ok()
                   ? nullptr
@@ -62,33 +62,32 @@ class ABSL_MUST_USE_RESULT StatusBuilder {
 
   bool ok() const { return !impl_; }
 
-  StatusBuilder& SetAppend() &;
-  StatusBuilder&& SetAppend() &&;
+  StatusBuilder &SetAppend() &;
+  StatusBuilder &&SetAppend() &&;
 
-  StatusBuilder& SetPrepend() &;
-  StatusBuilder&& SetPrepend() &&;
+  StatusBuilder &SetPrepend() &;
+  StatusBuilder &&SetPrepend() &&;
 
-  StatusBuilder& SetNoLogging() &;
-  StatusBuilder&& SetNoLogging() &&;
+  StatusBuilder &SetNoLogging() &;
+  StatusBuilder &&SetNoLogging() &&;
 
-  template <typename T>
-  StatusBuilder& operator<<(const T& msg) & {
-    if (!impl_) return *this;
+  template <typename T> StatusBuilder &operator<<(const T &msg) & {
+    if (!impl_)
+      return *this;
     impl_->stream << msg;
     return *this;
   }
 
-  template <typename T>
-  StatusBuilder&& operator<<(const T& msg) && {
+  template <typename T> StatusBuilder &&operator<<(const T &msg) && {
     return std::move(*this << msg);
   }
 
-  operator absl::Status() const&;
+  operator absl::Status() const &;
   operator absl::Status() &&;
 
   absl::Status JoinMessageToStatus();
 
- private:
+private:
   struct Impl {
     // Specifies how to join the error message in the original status and any
     // additional message that has been streamed into the builder.
@@ -98,10 +97,10 @@ class ABSL_MUST_USE_RESULT StatusBuilder {
       kPrepend,
     };
 
-    Impl(const absl::Status& status, mediapipe::source_location location);
-    Impl(absl::Status&& status, mediapipe::source_location location);
-    Impl(const Impl&);
-    Impl& operator=(const Impl&);
+    Impl(const absl::Status &status, mediapipe::source_location location);
+    Impl(absl::Status &&status, mediapipe::source_location location);
+    Impl(const Impl &);
+    Impl &operator=(const Impl &);
 
     absl::Status JoinMessageToStatus();
 
@@ -123,13 +122,13 @@ class ABSL_MUST_USE_RESULT StatusBuilder {
   std::unique_ptr<Impl> impl_;
 };
 
-inline StatusBuilder AlreadyExistsErrorBuilder(
-    mediapipe::source_location location) {
+inline StatusBuilder
+AlreadyExistsErrorBuilder(mediapipe::source_location location) {
   return StatusBuilder(absl::StatusCode::kAlreadyExists, location);
 }
 
-inline StatusBuilder FailedPreconditionErrorBuilder(
-    mediapipe::source_location location) {
+inline StatusBuilder
+FailedPreconditionErrorBuilder(mediapipe::source_location location) {
   return StatusBuilder(absl::StatusCode::kFailedPrecondition, location);
 }
 
@@ -137,8 +136,8 @@ inline StatusBuilder InternalErrorBuilder(mediapipe::source_location location) {
   return StatusBuilder(absl::StatusCode::kInternal, location);
 }
 
-inline StatusBuilder InvalidArgumentErrorBuilder(
-    mediapipe::source_location location) {
+inline StatusBuilder
+InvalidArgumentErrorBuilder(mediapipe::source_location location) {
   return StatusBuilder(absl::StatusCode::kInvalidArgument, location);
 }
 
@@ -146,13 +145,13 @@ inline StatusBuilder NotFoundErrorBuilder(mediapipe::source_location location) {
   return StatusBuilder(absl::StatusCode::kNotFound, location);
 }
 
-inline StatusBuilder UnavailableErrorBuilder(
-    mediapipe::source_location location) {
+inline StatusBuilder
+UnavailableErrorBuilder(mediapipe::source_location location) {
   return StatusBuilder(absl::StatusCode::kUnavailable, location);
 }
 
-inline StatusBuilder UnimplementedErrorBuilder(
-    mediapipe::source_location location) {
+inline StatusBuilder
+UnimplementedErrorBuilder(mediapipe::source_location location) {
   return StatusBuilder(absl::StatusCode::kUnimplemented, location);
 }
 
@@ -160,6 +159,6 @@ inline StatusBuilder UnknownErrorBuilder(mediapipe::source_location location) {
   return StatusBuilder(absl::StatusCode::kUnknown, location);
 }
 
-}  // namespace mediapipe
+} // namespace mediapipe
 
-#endif  // MEDIAPIPE_DEPS_STATUS_BUILDER_H_
+#endif // MEDIAPIPE_DEPS_STATUS_BUILDER_H_

@@ -18,13 +18,13 @@
 
 namespace mediapipe {
 
-std::ostream& operator<<(std::ostream& os, const absl::Status& x) {
+std::ostream &operator<<(std::ostream &os, const absl::Status &x) {
   os << x.ToString();
   return os;
 }
 
-std::string* MediaPipeCheckOpHelperOutOfLine(const absl::Status& v,
-                                             const char* msg) {
+std::string *MediaPipeCheckOpHelperOutOfLine(const absl::Status &v,
+                                             const char *msg) {
   std::string r("Non-OK-status: ");
   r += msg;
   r += " status: ";
@@ -33,4 +33,4 @@ std::string* MediaPipeCheckOpHelperOutOfLine(const absl::Status& v,
   return new std::string(r);
 }
 
-}  // namespace mediapipe
+} // namespace mediapipe

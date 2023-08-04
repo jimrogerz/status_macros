@@ -70,14 +70,14 @@ inline absl::Status UnavailableError(absl::string_view message) {
   return absl::Status(absl::StatusCode::kUnavailable, message);
 }
 
-inline bool IsCancelled(const absl::Status& status) {
+inline bool IsCancelled(const absl::Status &status) {
   return status.code() == absl::StatusCode::kCancelled;
 }
 
-inline bool IsNotFound(const absl::Status& status) {
+inline bool IsNotFound(const absl::Status &status) {
   return status.code() == absl::StatusCode::kNotFound;
 }
 
-}  // namespace mediapipe
+} // namespace mediapipe
 
-#endif  // MEDIAPIPE_DEPS_CANONICAL_ERRORS_H_
+#endif // MEDIAPIPE_DEPS_CANONICAL_ERRORS_H_

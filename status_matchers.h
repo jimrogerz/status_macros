@@ -16,18 +16,18 @@
 #define MEDIAPIPE_DEPS_STATUS_MATCHERS_H_
 
 #include "absl/status/status.h"
+#include "mediapipe/framework/port/statusor.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "mediapipe/framework/port/statusor.h"
 
 namespace mediapipe {
 
-inline const ::absl::Status& GetStatus(const ::absl::Status& status) {
+inline const ::absl::Status &GetStatus(const ::absl::Status &status) {
   return status;
 }
 
 template <typename T>
-inline const ::absl::Status& GetStatus(const ::absl::StatusOr<T>& status) {
+inline const ::absl::Status &GetStatus(const ::absl::StatusOr<T> &status) {
   return status.status();
 }
 
@@ -36,28 +36,28 @@ inline const ::absl::Status& GetStatus(const ::absl::StatusOr<T>& status) {
 template <typename StatusOrType>
 class IsOkAndHoldsMatcherImpl
     : public ::testing::MatcherInterface<StatusOrType> {
- public:
+public:
   typedef
       typename std::remove_reference<StatusOrType>::type::value_type value_type;
 
   template <typename InnerMatcher>
-  explicit IsOkAndHoldsMatcherImpl(InnerMatcher&& inner_matcher)
-      : inner_matcher_(::testing::SafeMatcherCast<const value_type&>(
+  explicit IsOkAndHoldsMatcherImpl(InnerMatcher &&inner_matcher)
+      : inner_matcher_(::testing::SafeMatcherCast<const value_type &>(
             std::forward<InnerMatcher>(inner_matcher))) {}
 
-  void DescribeTo(std::ostream* os) const override {
+  void DescribeTo(std::ostream *os) const override {
     *os << "is OK and has a value that ";
     inner_matcher_.DescribeTo(os);
   }
 
-  void DescribeNegationTo(std::ostream* os) const override {
+  void DescribeNegationTo(std::ostream *os) const override {
     *os << "isn't OK or has a value that ";
     inner_matcher_.DescribeNegationTo(os);
   }
 
   bool MatchAndExplain(
       StatusOrType actual_value,
-      ::testing::MatchResultListener* result_listener) const override {
+      ::testing::MatchResultListener *result_listener) const override {
     if (!actual_value.ok()) {
       *result_listener << "which has status " << actual_value.status();
       return false;
@@ -75,14 +75,13 @@ class IsOkAndHoldsMatcherImpl
     return matches;
   }
 
- private:
-  const ::testing::Matcher<const value_type&> inner_matcher_;
+private:
+  const ::testing::Matcher<const value_type &> inner_matcher_;
 };
 
 // Implements IsOkAndHolds(m) as a polymorphic matcher.
-template <typename InnerMatcher>
-class IsOkAndHoldsMatcher {
- public:
+template <typename InnerMatcher> class IsOkAndHoldsMatcher {
+public:
   explicit IsOkAndHoldsMatcher(InnerMatcher inner_matcher)
       : inner_matcher_(std::move(inner_matcher)) {}
 
@@ -90,12 +89,12 @@ class IsOkAndHoldsMatcher {
   // given type.  StatusOrType can be either StatusOr<T> or a
   // reference to StatusOr<T>.
   template <typename StatusOrType>
-  operator ::testing::Matcher<StatusOrType>() const {  // NOLINT
+  operator ::testing::Matcher<StatusOrType>() const { // NOLINT
     return ::testing::Matcher<StatusOrType>(
-        new IsOkAndHoldsMatcherImpl<const StatusOrType&>(inner_matcher_));
+        new IsOkAndHoldsMatcherImpl<const StatusOrType &>(inner_matcher_));
   }
 
- private:
+private:
   const InnerMatcher inner_matcher_;
 };
 
@@ -103,22 +102,21 @@ class IsOkAndHoldsMatcher {
 // T can be Status, StatusOr<>, or a reference to either of them.
 template <typename T>
 class MonoIsOkMatcherImpl : public ::testing::MatcherInterface<T> {
- public:
-  void DescribeTo(std::ostream* os) const override { *os << "is OK"; }
-  void DescribeNegationTo(std::ostream* os) const override {
+public:
+  void DescribeTo(std::ostream *os) const override { *os << "is OK"; }
+  void DescribeNegationTo(std::ostream *os) const override {
     *os << "is not OK";
   }
   bool MatchAndExplain(T actual_value,
-                       ::testing::MatchResultListener*) const override {
+                       ::testing::MatchResultListener *) const override {
     return GetStatus(actual_value).ok();
   }
 };
 
 // Implements IsOk() as a polymorphic matcher.
 class IsOkMatcher {
- public:
-  template <typename T>
-  operator ::testing::Matcher<T>() const {  // NOLINT
+public:
+  template <typename T> operator ::testing::Matcher<T>() const { // NOLINT
     return ::testing::Matcher<T>(new MonoIsOkMatcherImpl<T>());
   }
 };
@@ -126,8 +124,8 @@ class IsOkMatcher {
 // Returns a gMock matcher that matches a StatusOr<> whose status is
 // OK and whose value matches the inner matcher.
 template <typename InnerMatcher>
-IsOkAndHoldsMatcher<typename std::decay<InnerMatcher>::type> IsOkAndHolds(
-    InnerMatcher&& inner_matcher) {
+IsOkAndHoldsMatcher<typename std::decay<InnerMatcher>::type>
+IsOkAndHolds(InnerMatcher &&inner_matcher) {
   return IsOkAndHoldsMatcher<typename std::decay<InnerMatcher>::type>(
       std::forward<InnerMatcher>(inner_matcher));
 }
@@ -143,29 +141,29 @@ inline IsOkMatcher IsOk() { return IsOkMatcher(); }
 // a Matcher<T>.
 
 class StatusIsMatcherCommonImpl {
- public:
+public:
   StatusIsMatcherCommonImpl(
       ::testing::Matcher<const absl::StatusCode> code_matcher,
-      ::testing::Matcher<const std::string&> message_matcher)
+      ::testing::Matcher<const std::string &> message_matcher)
       : code_matcher_(std::move(code_matcher)),
         message_matcher_(std::move(message_matcher)) {}
 
-  void DescribeTo(std::ostream* os) const {
+  void DescribeTo(std::ostream *os) const {
     *os << "has a status code that ";
     code_matcher_.DescribeTo(os);
     *os << ", and has an error message that ";
     message_matcher_.DescribeTo(os);
   }
 
-  void DescribeNegationTo(std::ostream* os) const {
+  void DescribeNegationTo(std::ostream *os) const {
     *os << "has a status code that ";
     code_matcher_.DescribeNegationTo(os);
     *os << ", or has an error message that ";
     message_matcher_.DescribeNegationTo(os);
   }
 
-  bool MatchAndExplain(const absl::Status& status,
-                       ::testing::MatchResultListener* result_listener) const {
+  bool MatchAndExplain(const absl::Status &status,
+                       ::testing::MatchResultListener *result_listener) const {
     ::testing::StringMatchResultListener inner_listener;
 
     inner_listener.Clear();
@@ -185,55 +183,54 @@ class StatusIsMatcherCommonImpl {
     return true;
   }
 
- private:
+private:
   const ::testing::Matcher<const absl::StatusCode> code_matcher_;
-  const ::testing::Matcher<const std::string&> message_matcher_;
+  const ::testing::Matcher<const std::string &> message_matcher_;
 };
 
 // Monomorphic implementation of matcher StatusIs() for a given type T. T can
 // be Status, StatusOr<>, or a reference to either of them.
 template <typename T>
 class MonoStatusIsMatcherImpl : public ::testing::MatcherInterface<T> {
- public:
+public:
   explicit MonoStatusIsMatcherImpl(StatusIsMatcherCommonImpl common_impl)
       : common_impl_(std::move(common_impl)) {}
 
-  void DescribeTo(std::ostream* os) const override {
+  void DescribeTo(std::ostream *os) const override {
     common_impl_.DescribeTo(os);
   }
 
-  void DescribeNegationTo(std::ostream* os) const override {
+  void DescribeNegationTo(std::ostream *os) const override {
     common_impl_.DescribeNegationTo(os);
   }
 
   bool MatchAndExplain(
       T actual_value,
-      ::testing::MatchResultListener* result_listener) const override {
+      ::testing::MatchResultListener *result_listener) const override {
     return common_impl_.MatchAndExplain(GetStatus(actual_value),
                                         result_listener);
   }
 
- private:
+private:
   StatusIsMatcherCommonImpl common_impl_;
 };
 
 // Implements StatusIs() as a polymorphic matcher.
 class StatusIsMatcher {
- public:
+public:
   StatusIsMatcher(::testing::Matcher<const absl::StatusCode> code_matcher,
-                  ::testing::Matcher<const std::string&> message_matcher)
+                  ::testing::Matcher<const std::string &> message_matcher)
       : common_impl_(
             ::testing::MatcherCast<const absl::StatusCode>(code_matcher),
-            ::testing::MatcherCast<const std::string&>(message_matcher)) {}
+            ::testing::MatcherCast<const std::string &>(message_matcher)) {}
 
   // Converts this polymorphic matcher to a monomorphic matcher of the given
   // type. T can be StatusOr<>, Status, or a reference to either of them.
-  template <typename T>
-  operator ::testing::Matcher<T>() const {  // NOLINT
+  template <typename T> operator ::testing::Matcher<T>() const { // NOLINT
     return ::testing::MakeMatcher(new MonoStatusIsMatcherImpl<T>(common_impl_));
   }
 
- private:
+private:
   const StatusIsMatcherCommonImpl common_impl_;
 };
 
@@ -252,7 +249,7 @@ StatusIsMatcher StatusIs(CodeMatcher code_matcher) {
   return StatusIs(std::move(code_matcher), ::testing::_);
 }
 
-}  // namespace mediapipe
+} // namespace mediapipe
 
 // Macros for testing the results of functions that return absl::Status or
 // absl::StatusOr<T> (for any type T).
@@ -263,13 +260,13 @@ StatusIsMatcher StatusIs(CodeMatcher code_matcher) {
 #define STATUS_MACROS_IMPL_CONCAT_(x, y) STATUS_MACROS_IMPL_CONCAT_INNER_(x, y)
 
 #undef MP_ASSERT_OK_AND_ASSIGN
-#define MP_ASSERT_OK_AND_ASSIGN(lhs, rexpr) \
-  MP_ASSERT_OK_AND_ASSIGN_IMPL_(            \
+#define MP_ASSERT_OK_AND_ASSIGN(lhs, rexpr)                                    \
+  MP_ASSERT_OK_AND_ASSIGN_IMPL_(                                               \
       STATUS_MACROS_IMPL_CONCAT_(_status_or_value, __LINE__), lhs, rexpr)
 
-#define MP_ASSERT_OK_AND_ASSIGN_IMPL_(statusor, lhs, rexpr) \
-  auto statusor = (rexpr);                                  \
-  ASSERT_TRUE(statusor.ok());                               \
+#define MP_ASSERT_OK_AND_ASSIGN_IMPL_(statusor, lhs, rexpr)                    \
+  auto statusor = (rexpr);                                                     \
+  ASSERT_TRUE(statusor.ok());                                                  \
   lhs = std::move(statusor.value())
 
-#endif  // MEDIAPIPE_DEPS_STATUS_MATCHERS_H_
+#endif // MEDIAPIPE_DEPS_STATUS_MATCHERS_H_
