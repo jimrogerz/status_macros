@@ -1,37 +1,28 @@
 # Google C++ Status Macros
 
-This repository contains a minimal [bazel](https://bazel.build) build target for Google C++ status macros, redistributed from [mediapipe](https://github.com/google/mediapipe).
+This repository contains a [bazel](https://bazel.build) build target for Google C++ status macros,
+redistributed from [mediapipe](https://github.com/google/mediapipe).
 
 ## Setup
 
-### Bzlmod
-
-This repo supports integration with [Bzlmod](https://docs.bazel.build/versions/5.0.0/bzlmod.html).
-
-I'll see if I can [get this in the central repository](https://github.com/bazelbuild/bazel-central-registry/pull/815), but for now looks like you'll have to set it up
-with a [local registry](https://bazel.build/external/registry).
-
-### WORKSPACE
-
-If you're not using Bzlmod, add the following to your WORKSPACE file:
-
+### MODULE.bzl
 
 ```
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+# Add the http_archive rule if you don't have it already
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-git_repository(
+# Pick the latest commit from https://github.com/jimrogerz/status_macros/commits/main/
+STATUS_MACROS_COMMIT = "cd57b990ffe8f6382f6680c2d16bbd3b98bdf125"
+http_archive(
     name = "status_macros",
-    commit = "1592ab2d4b4f92976fc3f4a6cb3a1323a4b549c3",
-    remote = "https://github.com/jimrogerz/status_macros.git",
+    strip_prefix = "status_macros-" + STATUS_MACROS_COMMIT,
+    url = "https://github.com/jimrogerz/status_macros/archive/%s.zip" % STATUS_MACROS_COMMIT,
 )
 ```
-
-Also make sure you have transitive dependencies from this repo's [WORKSPACE](https://github.com/jimrogerz/status_macros/blob/main/WORKSPACE).
 
 ### BUILD
 
 Add `"@status_macros//:status_macros"` to BUILD deps for targets that use this.
-
 
 ## Usage
 

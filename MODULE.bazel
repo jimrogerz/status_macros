@@ -1,4 +1,4 @@
-module(name = "status_macros", version="")
+module(name = "status_macros", version="1.0.0")
 
-bazel_dep(name = "rules_cc", version = "0.0.8")
-bazel_dep(name = "abseil-cpp", version = "20230125.1", repo_name = "com_google_absl")
+bazel_dep(name = "rules_cc", version = "0.1.0")
+bazel_dep(name = "abseil-cpp", version = "20240722.1", repo_name = "com_google_absl")
