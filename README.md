@@ -8,11 +8,15 @@ redistributed from [mediapipe](https://github.com/google/mediapipe).
 ### MODULE.bzl
 
 ```
-# Add the http_archive rule if you don't have it already
+# Add bazel_deps from https://github.com/jimrogerz/status_macros/blob/main/MODULE.bazel
+bazel_dep(name = "rules_cc", version = "0.1.0")
+bazel_dep(name = "abseil-cpp", version = "20240722.1"")
+
+# Add the http_archive rule
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 # Pick the latest commit from https://github.com/jimrogerz/status_macros/commits/main/
-STATUS_MACROS_COMMIT = "cd57b990ffe8f6382f6680c2d16bbd3b98bdf125"
+STATUS_MACROS_COMMIT = "c2fcdb9b0d29ae60470c98c0f6f8ea42daad942c"
 http_archive(
     name = "status_macros",
     strip_prefix = "status_macros-" + STATUS_MACROS_COMMIT,
