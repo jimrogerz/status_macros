@@ -11,7 +11,7 @@ Add bazel_deps from https://github.com/jimrogerz/status_macros/blob/main/MODULE.
 
 ```
 bazel_dep(name = "rules_cc", version = "0.1.0")
-bazel_dep(name = "abseil-cpp", version = "20240722.1"")
+bazel_dep(name = "abseil-cpp", version = "20240722.1", repo_name = "com_google_absl")
 ```
 
 Add the http_archive rule:
